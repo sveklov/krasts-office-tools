@@ -15,7 +15,7 @@ public class HtmlParserTest {
 
     @Test
     public void parse() throws IOException {
-	InputStream htmlStream = getClass().getClassLoader().getResourceAsStream("csdd_journal_example.html");
+	InputStream htmlStream = getClass().getClassLoader().getResourceAsStream("B-C.html");
 	String html = IOUtils.toString(htmlStream, "utf-8");
 	Model model = new HtmlParser().parseCsddGroup(html);
 

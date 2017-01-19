@@ -54,6 +54,16 @@
 				<artifactId>guava</artifactId>
 				<version>11.0.1</version>
 			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.22</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.1.8</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<developers>
@@ -63,10 +73,6 @@
 			<email>mihails.volkovs@gmail.com</email>
 		</developer>
 	</developers>
-	<scm>
-		<connection>scm:hg:file:///${basedir}</connection>
-		<developerConnection>scm:hg:file:///${basedir}</developerConnection>
-	</scm>
 	<organization>
 		<name>KRASTS</name>
 		<url>http://www.krasts.lv</url>
@@ -80,15 +86,6 @@
 					<preparationGoals>clean install</preparationGoals>
 					<goals>deploy</goals>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-					<sourcepath>${basedir}/dontgenerate</sourcepath>
-					<maxmemory>1024M</maxmemory>
 				</configuration>
 			</plugin>
 		</plugins>

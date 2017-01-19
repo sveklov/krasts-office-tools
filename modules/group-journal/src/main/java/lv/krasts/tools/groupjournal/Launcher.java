@@ -6,20 +6,25 @@ import lv.krasts.tools.groupjournal.parser.HtmlParser;
 import lv.krasts.tools.groupjournal.parser.Model;
 import lv.krasts.tools.groupjournal.template.OdtDocumentCreator;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 public class Launcher {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Launcher.class);
+
     private static final File currentFolder = new File(".");
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Starting Template Engine...");
+        LOG.info("Starting Template Engine...");
 
         // scanning HTML files
         File[] htmlFiles = currentFolder.listFiles(new FilenameFilter() {
@@ -33,7 +38,7 @@ public class Launcher {
             generateOdt(htmlFile);
         }
 
-        System.out.println("Done");
+        LOG.info("Done");
     }
 
     private static void generateOdt(File htmlFile) throws IOException {
@@ -44,11 +49,12 @@ public class Launcher {
         Model model = parser.parseCsddGroup(html);
         Map<String, Object> beans = Maps.newHashMap();
         beans.put("group", model);
-        System.out.println(String.format("Model from file '%s' has been successfully parsed", htmlFile.getName()));
+        LOG.info("Model from file {} has been successfully parsed", htmlFile.getName());
 
         // resolving templates folder
         String folderName = htmlFile.getName().replaceAll(".html", "").replaceAll(".htm", "");
         File templatesFolder = new File(htmlFile.getParentFile(), folderName);
+        LOG.info("Searching for templates (.odt) in folder {}", templatesFolder);
         Preconditions.checkState(templatesFolder.exists(), String.format("Folder '%s' does not exist in current folder (%s)", templatesFolder, currentFolder));
 
         // processing every template
@@ -58,12 +64,13 @@ public class Launcher {
                 return name.endsWith(".odt") && !name.endsWith("_generated.odt");
             }
         });
+        LOG.info("Found templates: " + Arrays.toString(templates));
 
         for (File templateFile : templates) {
             FileInputStream template = new FileInputStream(templateFile);
             FileOutputStream generated = new FileOutputStream(templateFile.getName() + "_generated.odt");
             new OdtDocumentCreator().create(template, beans, generated);
-            System.out.println("File " + templateFile.getName() + " completed");
+            LOG.info("File {} completed", templateFile.getName());
         }
 
     }
