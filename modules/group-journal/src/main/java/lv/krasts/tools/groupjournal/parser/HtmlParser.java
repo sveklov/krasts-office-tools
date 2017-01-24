@@ -34,9 +34,7 @@ public class HtmlParser {
     private List<Student> parseStudents(Element studentsTable) {
         List<Student> students = Lists.newArrayList();
         Elements rows = studentsTable.select("tr");
-        Iterator<Element> iterator = rows.iterator();
-        while (iterator.hasNext()) {
-            Element row = iterator.next();
+        for (Element row : rows) {
             students.add(parseStudent(row));
         }
         return students;
@@ -56,9 +54,7 @@ public class HtmlParser {
     private List<Lecture> parseLectures(Element timeTable) {
         List<Lecture> lectures = Lists.newArrayList();
         Elements rows = timeTable.select("tr");
-        Iterator<Element> iterator = rows.iterator();
-        while (iterator.hasNext()) {
-            Element row = iterator.next();
+        for (Element row : rows) {
             lectures.add(parseLecture(row));
         }
         return lectures;
@@ -81,8 +77,19 @@ public class HtmlParser {
         iterator.next();
 
         String rulesTeacher = getValue(iterator.next()).replaceAll("\\d", "").replaceAll("[()-]", "");
-        String technicalTeacher = getValue(iterator.next()).replaceAll("\\d", "").replaceAll("[()-]", "");
-        Date startDate = toDate(getValue(iterator.next()));
+
+        // there is no technical teacher for some categories (like "95 kods")
+        String technicalTeacherOrStartDate = getValue(iterator.next());
+        String technicalTeacher;
+        Date startDate;
+        if (isDate(technicalTeacherOrStartDate)) {
+            technicalTeacher = "";
+            startDate = toDate(technicalTeacherOrStartDate);
+        } else {
+            technicalTeacher = technicalTeacherOrStartDate.replaceAll("\\d", "").replaceAll("[()-]", "");
+            startDate = toDate(getValue(iterator.next()));
+        }
+
         Date endDate = toDate(getValue(iterator.next()));
         String type = getValue(iterator.next());
         String roomId = getValue(iterator.next());
@@ -100,6 +107,15 @@ public class HtmlParser {
             return new SimpleDateFormat("dd.MM.yyyy").parse(date);
         } catch (ParseException e) {
             throw Throwables.propagate(e);
+        }
+    }
+
+    private boolean isDate(String date) {
+        try {
+            new SimpleDateFormat("dd.MM.yyyy").parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
         }
     }
 
