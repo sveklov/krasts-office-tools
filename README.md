@@ -1,3 +1,7 @@
+
+[![CircleCI](https://circleci.com/gh/sveklov/krasts-office-tools/tree/master.svg?style=shield)](https://circleci.com/gh/sveklov/krasts-office-tools/tree/master)
+
+
 # krasts-office-tools
 
 ``` cmd
